@@ -1,4 +1,4 @@
-package com.github.abhrp.pixabaysearchdemo;
+package com.github.abhrp.pixabaysearchdemo.activity;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -9,6 +9,17 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.github.abhrp.pixabaysearchdemo.R;
+import com.github.abhrp.pixabaysearchdemo.network.NetworkConfig;
+import com.github.abhrp.pixabaysearchdemo.network.response.PixabayPhotoResponse;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class PixabaySearchActivity extends AppCompatActivity {
 
     @Override
@@ -16,6 +27,26 @@ public class PixabaySearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pixabay_search);
         handleIntent(getIntent());
+
+        getPhotos();
+    }
+
+    private void getPhotos() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("q", "flowers");
+        params.put("photo_type", "photo");
+
+        NetworkConfig.getNetworkConfig().getPhotos(params, new Callback<PixabayPhotoResponse>() {
+            @Override
+            public void onResponse(Call<PixabayPhotoResponse> call, Response<PixabayPhotoResponse> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<PixabayPhotoResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
