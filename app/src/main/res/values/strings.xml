@@ -2,4 +2,7 @@
     <string name="app_name">PixabaySearchDemo</string>
     <string name="search_hint">Search for images</string>
     <string name="photo_by_user">By %1$s</string>
+    <string name="search_images">Click on the search button to find amazing images from Pixabay.</string>
+    <string name="no_images">Sorry, your search term \'%1$s\' did not fetch any image.</string>
+    <string name="error">Darn! Something\'s wrong.</string>
 </resources>

@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.github.abhrp.pixabaysearchdemo.R;
 import com.github.abhrp.pixabaysearchdemo.adapters.ImageListAdapter;
@@ -41,17 +42,20 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
 
     private Toolbar mToolbar;
     private MaterialSearchView mSearchView;
+    private RecyclerView mRecyclerView;
+    private ProgressBar mProgressBar;
+    private TextView placeholderTextView;
+
+    private ImageListAdapter imageListAdapter;
+
     private final String KEYWORD_PARAM = "q";
     private final String PAGE_NO = "page";
     private final String PAGE_SIZE = "per_page";
-    private RecyclerView mRecyclerView;
-    private ImageListAdapter imageListAdapter;
     private int pageNo = 1;
     private int pageSize = 50;
     private int totalListSize = 0;
     private int listLoaded = 0;
     private String searchQuery = "";
-    private ProgressBar mProgressBar;
     private boolean hasMoreItems;
 
     private RecyclerViewLoadingListener recyclerViewLoadingListener;
@@ -93,6 +97,8 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
         mRecyclerView.addOnScrollListener(recyclerViewLoadingListener);
 
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        placeholderTextView = (TextView) findViewById(R.id.placeholder);
+        placeholderTextView.setVisibility(View.VISIBLE);
     }
 
     private void addSuggestions() {
@@ -109,6 +115,7 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
 
     private void getPhotos() {
         mRecyclerView.setEnabled(false);
+        placeholderTextView.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
         final Map<String, Object> params = new HashMap<>();
         if (!TextUtils.isEmpty(searchQuery)) {
@@ -121,7 +128,11 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
             public void onResponse(Call<PixabayPhotoResponse> call, Response<PixabayPhotoResponse> response) {
                 mProgressBar.setVisibility(View.GONE);
                 if (response != null && response.isSuccessful()) {
-                    if (response.body() != null) {
+                    if (response.body() != null && response.body().hits != null) {
+                        if (response.body().hits.size() == 0) {
+                            handleError(true);
+                            return;
+                        }
                         if (pageNo == 1) {
                             imageListAdapter.setList(response.body().hits);
                         } else {
@@ -129,6 +140,7 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
                         }
                         if (pageNo == 1) {
                             totalListSize = response.body().totalHits;
+                            placeholderTextView.setVisibility(View.GONE);
                             mRecyclerView.setVisibility(View.VISIBLE);
                         }
                         listLoaded += response.body().hits.size();
@@ -136,19 +148,29 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
                         recyclerViewLoadingListener.setDoneLoading();
                         mRecyclerView.setEnabled(true);
                     } else {
-                        mRecyclerView.setVisibility(View.GONE);
+                        handleError(false);
                     }
                 } else {
-                    mRecyclerView.setVisibility(View.GONE);
+                    handleError(false);
                 }
             }
 
             @Override
             public void onFailure(Call<PixabayPhotoResponse> call, Throwable t) {
                 mProgressBar.setVisibility(View.GONE);
-                mRecyclerView.setVisibility(View.GONE);
+                handleError(false);
             }
         });
+    }
+
+    private void handleError(boolean hasNoImagesError) {
+        if (hasNoImagesError) {
+            placeholderTextView.setText(getString(R.string.no_images, searchQuery));
+        } else {
+            placeholderTextView.setText(getString(R.string.error));
+        }
+        mRecyclerView.setVisibility(View.GONE);
+        placeholderTextView.setVisibility(View.VISIBLE);
     }
 
     @Override

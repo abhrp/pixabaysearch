@@ -9,4 +9,5 @@
     <item name="progressBar" type="id"/>
     <item name="full_image" type="id"/>
     <item name="user_text" type="id"/>
+    <item name="placeholder" type="id"/>
 </resources>
