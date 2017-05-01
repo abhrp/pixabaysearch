@@ -12,7 +12,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 public class RecyclerViewLoadingListener extends RecyclerView.OnScrollListener {
 
     protected static final int PAGE_LOAD_THRESHOLD = 8;
-    private static final int PAGE_LOAD_MOMENT_THRESHOLD = 15;
 
     public interface OnLoadItems {
 

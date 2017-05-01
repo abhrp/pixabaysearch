@@ -5,11 +5,13 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
+
 /**
  * Created by abhrp on 5/1/17.
  */
 
 public class Util {
+    private static final String TAG = "Util";
     public static int displayWidth;
     public static int displayHeight;
 

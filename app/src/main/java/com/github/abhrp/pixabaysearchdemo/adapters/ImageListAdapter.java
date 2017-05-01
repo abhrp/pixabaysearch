@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 
 import com.github.abhrp.pixabaysearchdemo.R;
 import com.github.abhrp.pixabaysearchdemo.adapters.base.RecyclerAdapter;
+import com.github.abhrp.pixabaysearchdemo.listeners.ImageClickListener;
 import com.github.abhrp.pixabaysearchdemo.model.PixabayPhoto;
+import com.github.abhrp.pixabaysearchdemo.util.Constants;
 import com.github.abhrp.pixabaysearchdemo.util.Util;
 import com.github.abhrp.pixabaysearchdemo.widget.NetworkImageView;
 
@@ -21,12 +23,12 @@ import java.lang.ref.WeakReference;
 public class ImageListAdapter extends RecyclerAdapter<PixabayPhoto> {
 
     private WeakReference<Context> context;
-    private final View.OnClickListener onClickListener;
+    private final ImageClickListener imageClickListener;
 
-    public ImageListAdapter(Context context, View.OnClickListener onClickListener) {
+    public ImageListAdapter(Context context, ImageClickListener imageClickListener) {
         super(context);
         this.context = new WeakReference<>(context);
-        this.onClickListener = onClickListener;
+        this.imageClickListener = imageClickListener;
     }
 
     @Override
@@ -40,22 +42,26 @@ public class ImageListAdapter extends RecyclerAdapter<PixabayPhoto> {
     }
 
     @Override
-    public void onItemBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (isFooterView(position) || isHeaderView(position)) {
-            return;
-        }
+    public void onItemBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (position < mList.size() && mList.get(position) != null && holder instanceof ImageViewHolder) {
-            ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
-            int displayWidth = Util.displayWidth/2 - Util.convertDpToPixel(context.get(), 24);
+            final ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
+            int displayWidth = Util.displayWidth/2 - Util.convertDpToPixel(context.get(), Constants.PADDING);
             double aspectRatio = (getItem(position).previewHeight)/(getItem(position).previewWidth*1.0);
             int displayHeight = (int) (displayWidth * aspectRatio);
             imageViewHolder.imageView.getLayoutParams().height = displayHeight;
             imageViewHolder.imageView.getLayoutParams().width = displayWidth;
             imageViewHolder.imageView.setImageUrl(getItem(position).previewURL, displayWidth, displayHeight);
-            imageViewHolder.imageCardView.setTag(position);
-            imageViewHolder.imageCardView.setOnClickListener(onClickListener);
+            imageViewHolder.imageCardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (imageClickListener != null) {
+                        imageClickListener.imageClicked(getItem(position), imageViewHolder.imageView);
+                    }
+                }
+            });
         }
     }
+
 
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         public CardView imageCardView;

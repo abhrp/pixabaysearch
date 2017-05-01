@@ -1,0 +1,24 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="com.github.abhrp.pixabaysearchdemo.activity.PhotoActivity"
+    android:fitsSystemWindows="true">
+    <com.github.abhrp.pixabaysearchdemo.widget.NetworkImageView
+        android:id="@id/full_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:fitsSystemWindows="true"/>
+    <ProgressBar
+        android:id="@id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyle"
+        android:progressTint="@color/colorPrimary"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+</FrameLayout>

@@ -17,10 +17,12 @@ import android.widget.ProgressBar;
 
 import com.github.abhrp.pixabaysearchdemo.R;
 import com.github.abhrp.pixabaysearchdemo.adapters.ImageListAdapter;
+import com.github.abhrp.pixabaysearchdemo.listeners.ImageClickListener;
 import com.github.abhrp.pixabaysearchdemo.listeners.RecyclerViewLoadingListener;
 import com.github.abhrp.pixabaysearchdemo.model.PixabayPhoto;
 import com.github.abhrp.pixabaysearchdemo.network.NetworkConfig;
 import com.github.abhrp.pixabaysearchdemo.network.response.PixabayPhotoResponse;
+import com.github.abhrp.pixabaysearchdemo.util.Constants;
 import com.github.abhrp.pixabaysearchdemo.util.PixabaySharedPreferences;
 import com.github.abhrp.pixabaysearchdemo.util.Util;
 import com.github.abhrp.pixabaysearchdemo.widget.SpacingDecorator;
@@ -36,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PixabaySearchActivity extends AppCompatActivity implements MaterialSearchView.OnQueryTextListener, MaterialSearchView.SearchViewListener, RecyclerViewLoadingListener.OnLoadItems, View.OnClickListener {
+public class PixabaySearchActivity extends AppCompatActivity implements MaterialSearchView.OnQueryTextListener, MaterialSearchView.SearchViewListener, RecyclerViewLoadingListener.OnLoadItems, ImageClickListener {
 
     private FrameLayout mToolbarContainer;
     private Toolbar mToolbar;
@@ -78,7 +80,7 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
         mRecyclerView.setVisibility(View.GONE);
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setHasFixedSize(false);
-        int spacing = Util.convertDpToPixel(this, 6);
+        int spacing = Util.convertDpToPixel(this, Constants.SPACING);
         mRecyclerView.addItemDecoration(new SpacingDecorator(spacing, spacing, true));
         StaggeredGridLayoutManager layoutManager = new
                 StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -245,13 +247,11 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
         return hasMoreItems;
     }
 
-    /**
-     * Called when a view has been clicked.
-     *
-     * @param v The view that was clicked.
-     */
-    @Override
-    public void onClick(View v) {
 
+    @Override
+    public void imageClicked(PixabayPhoto photo, View sharedView) {
+        Intent intent = new Intent(this, PhotoActivity.class);
+        intent.putExtra(Constants.PHOTO, photo);
+        startActivity(intent);
     }
 }

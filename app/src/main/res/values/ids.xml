@@ -8,4 +8,5 @@
     <item name="feed_image" type="id"/>
     <item name="image_card" type="id"/>
     <item name="progressBar" type="id"/>
+    <item name="full_image" type="id"/>
 </resources>
