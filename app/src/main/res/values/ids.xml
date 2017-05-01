@@ -4,4 +4,7 @@
     <item name="toolbar" type="id"/>
     <item name="search_view" type="id"/>
     <item name="action_search" type="id"/>
+    <item name="image_list" type="id"/>
+    <item name="feed_image" type="id"/>
+    <item name="image_card" type="id"/>
 </resources>

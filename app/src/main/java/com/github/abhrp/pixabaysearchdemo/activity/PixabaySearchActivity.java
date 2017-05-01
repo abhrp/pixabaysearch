@@ -1,22 +1,33 @@
 package com.github.abhrp.pixabaysearchdemo.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.github.abhrp.pixabaysearchdemo.R;
+import com.github.abhrp.pixabaysearchdemo.adapters.ImageListAdapter;
+import com.github.abhrp.pixabaysearchdemo.model.PixabayPhoto;
 import com.github.abhrp.pixabaysearchdemo.network.NetworkConfig;
 import com.github.abhrp.pixabaysearchdemo.network.response.PixabayPhotoResponse;
+import com.github.abhrp.pixabaysearchdemo.util.PixabaySharedPreferences;
+import com.github.abhrp.pixabaysearchdemo.util.Util;
+import com.github.abhrp.pixabaysearchdemo.widget.SpacingDecorator;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -28,33 +39,72 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
     private FrameLayout mToolbarContainer;
     private Toolbar mToolbar;
     private MaterialSearchView mSearchView;
+    private final String KEYWORD_PARAM = "q";
+    private RecyclerView mRecyclerView;
+    private ImageListAdapter imageListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Util.getDefaultDisplay(this);
         setContentView(R.layout.activity_pixabay_search);
         mToolbarContainer = (FrameLayout) findViewById(R.id.toolbar_container);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mRecyclerView = (RecyclerView) findViewById(R.id.image_list);
+        mRecyclerView.setNestedScrollingEnabled(false);
+        int spacing = Util.convertDpToPixel(this, 6);
+        mRecyclerView.addItemDecoration(new SpacingDecorator(spacing, spacing, true));
+        imageListAdapter = new ImageListAdapter(this, null);
+        imageListAdapter.setList(new ArrayList<PixabayPhoto>());
+        mRecyclerView.setAdapter(imageListAdapter);
+        mRecyclerView.setVisibility(View.GONE);
+        StaggeredGridLayoutManager layoutManager = new
+                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        mRecyclerView.setLayoutManager(layoutManager);
         setSupportActionBar(mToolbar);
-        mToolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        mToolbar.setTitleTextColor(Color.WHITE);
         mSearchView = (MaterialSearchView) findViewById(R.id.search_view);
         mSearchView.setVoiceSearch(false);
         mSearchView.setCursorDrawable(R.drawable.custom_cursor);
         mSearchView.setEllipsize(true);
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnSearchViewListener(this);
-        getPhotos();
+        addSuggestions();
     }
 
-    private void getPhotos() {
+    private void addSuggestions() {
+        if (PixabaySharedPreferences.getSearchSuggestions() != null && PixabaySharedPreferences.getSearchSuggestions().size() > 0) {
+            List<String> suggestionsList = PixabaySharedPreferences.getSearchSuggestions();
+            Collections.reverse(suggestionsList);
+            String[] suggestions = new String[suggestionsList.size()];
+            for (int i=0; i < suggestions.length; i++) {
+                suggestions[i] = suggestionsList.get(i);
+            }
+            mSearchView.setSuggestions(suggestions);
+        }
+    }
+
+    private void getPhotos(String searchQuery) {
         Map<String, Object> params = new HashMap<>();
-        params.put("q", "flowers");
-        params.put("photo_type", "photo");
+        if (!TextUtils.isEmpty(searchQuery)) {
+            params.put(KEYWORD_PARAM, searchQuery);
+        }
 
         NetworkConfig.getNetworkConfig().getPhotos(params, new Callback<PixabayPhotoResponse>() {
             @Override
             public void onResponse(Call<PixabayPhotoResponse> call, Response<PixabayPhotoResponse> response) {
-
+                if (response != null && response.isSuccessful()) {
+                    if (response.body() != null) {
+                        imageListAdapter.addSubList(response.body().hits);
+                        imageListAdapter.notifyDataSetChanged();
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                    } else {
+                        mRecyclerView.setVisibility(View.GONE);
+                    }
+                } else {
+                    mRecyclerView.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -111,6 +161,11 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
      */
     @Override
     public boolean onQueryTextSubmit(String query) {
+        if (mSearchView.isSearchOpen()) {
+            mSearchView.closeSearch();
+        }
+        getPhotos(query);
+        PixabaySharedPreferences.setSearchSuggestions(query.trim());
         return false;
     }
 
@@ -128,7 +183,7 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
 
     @Override
     public void onSearchViewShown() {
-
+        addSuggestions();
     }
 
     @Override
