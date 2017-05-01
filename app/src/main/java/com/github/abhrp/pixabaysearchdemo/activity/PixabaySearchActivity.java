@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.github.abhrp.pixabaysearchdemo.R;
@@ -40,7 +39,6 @@ import retrofit2.Response;
 
 public class PixabaySearchActivity extends AppCompatActivity implements MaterialSearchView.OnQueryTextListener, MaterialSearchView.SearchViewListener, RecyclerViewLoadingListener.OnLoadItems, ImageClickListener {
 
-    private FrameLayout mToolbarContainer;
     private Toolbar mToolbar;
     private MaterialSearchView mSearchView;
     private final String KEYWORD_PARAM = "q";
@@ -63,7 +61,7 @@ public class PixabaySearchActivity extends AppCompatActivity implements Material
         super.onCreate(savedInstanceState);
         Util.getDefaultDisplay(this);
         setContentView(R.layout.activity_pixabay_search);
-        mToolbarContainer = (FrameLayout) findViewById(R.id.toolbar_container);
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setTitleTextColor(Color.WHITE);

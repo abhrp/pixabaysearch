@@ -1,8 +1,8 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@android:color/transparent"
     tools:context="com.github.abhrp.pixabaysearchdemo.activity.PhotoActivity"
     android:fitsSystemWindows="true">
     <com.github.abhrp.pixabaysearchdemo.widget.NetworkImageView
@@ -16,9 +16,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="?android:attr/progressBarStyle"
-        android:progressTint="@color/colorPrimary"
+        android:progressTint="@android:color/white"
         android:indeterminate="true"
-        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTint="@android:color/white"
         android:visibility="gone"
-        android:layout_gravity="center"/>
-</FrameLayout>
+        android:layout_centerInParent="true"/>
+    <TextView
+        android:id="@id/user_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:gravity="start|left"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:padding="5dp"
+        android:background="@color/black_overlay"
+        android:elevation="2dp"
+        tools:text="By User"
+        />
+</RelativeLayout>
