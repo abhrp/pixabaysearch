@@ -38,14 +38,14 @@ public class NetworkImageView extends ImageView {
     public void setImageUrl(String url, int width, int height) {
         if (url != null && url.contains("http")) {
             this.url = url;
-            setupGlide(-1, true, width, height);
+            setupGlide(R.drawable.image_placeholder, true, width, height);
         }
     }
 
     public void setImageUrl(String url, RequestListener listener) {
         if (url != null && url.contains("http")) {
             this.url = url;
-            setupGlide(-1, true, listener);
+            setupGlide(R.drawable.image_placeholder, true, listener);
         }
     }
 
