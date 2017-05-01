@@ -45,7 +45,7 @@ public class NetworkImageView extends ImageView {
     public void setImageUrl(String url, RequestListener listener) {
         if (url != null && url.contains("http")) {
             this.url = url;
-            setupGlide(R.drawable.image_placeholder, true, listener);
+            setupGlide(-1, true, listener);
         }
     }
 
