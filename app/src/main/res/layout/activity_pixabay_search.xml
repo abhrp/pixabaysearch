@@ -10,9 +10,19 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:paddingLeft="12dp"
         android:paddingStart="12dp"
-        android:paddingRight="12dp"
-        android:paddingEnd="12dp">
+        android:paddingRight="6dp"
+        android:paddingEnd="6dp">
     </android.support.v7.widget.RecyclerView>
+    <ProgressBar
+        android:id="@id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyle"
+        android:progressTint="@color/colorPrimary"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
     <FrameLayout
         android:id="@id/toolbar_container"
         android:layout_width="match_parent"

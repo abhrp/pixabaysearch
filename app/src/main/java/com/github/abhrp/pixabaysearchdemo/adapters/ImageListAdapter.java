@@ -47,11 +47,11 @@ public class ImageListAdapter extends RecyclerAdapter<PixabayPhoto> {
         if (position < mList.size() && mList.get(position) != null && holder instanceof ImageViewHolder) {
             ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
             int displayWidth = Util.displayWidth/2 - Util.convertDpToPixel(context.get(), 24);
-            double aspectRatio = (getItem(position).webformatHeight)/(getItem(position).webformatWidth*1.0);
+            double aspectRatio = (getItem(position).previewHeight)/(getItem(position).previewWidth*1.0);
             int displayHeight = (int) (displayWidth * aspectRatio);
             imageViewHolder.imageView.getLayoutParams().height = displayHeight;
             imageViewHolder.imageView.getLayoutParams().width = displayWidth;
-            imageViewHolder.imageView.setImageUrl(getItem(position).webformatURL, displayWidth, displayHeight);
+            imageViewHolder.imageView.setImageUrl(getItem(position).previewURL, displayWidth, displayHeight);
             imageViewHolder.imageCardView.setTag(position);
             imageViewHolder.imageCardView.setOnClickListener(onClickListener);
         }

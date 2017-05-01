@@ -7,4 +7,5 @@
     <item name="image_list" type="id"/>
     <item name="feed_image" type="id"/>
     <item name="image_card" type="id"/>
+    <item name="progressBar" type="id"/>
 </resources>
